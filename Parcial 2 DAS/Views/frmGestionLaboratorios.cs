@@ -4,7 +4,7 @@ using SistemaReservas.Models;
 using System;
 using System.Windows.Forms;
 
-namespace SistemaReservas.Views
+namespace Parcial_2_DAS.Views
 {
     public partial class frmGestionLaboratorios : Form
     {

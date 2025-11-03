@@ -1,4 +1,4 @@
-namespace SistemaReservas.Views
+namespace Parcial_2_DAS.Views
 {
     partial class frmGestionLaboratorios
     {
