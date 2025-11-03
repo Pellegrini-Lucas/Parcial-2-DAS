@@ -74,26 +74,28 @@ namespace Parcial_2_DAS.Views
             {
                 string advertencia = _controller.ObtenerAdvertenciaBaja(numeroAsignado);
 
-                DialogResult confirmacion;
                 if (advertencia != null)
                 {
-                    confirmacion = MessageBox.Show(advertencia, "Advertencia", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    // Si hay advertencia, significa que hay reservas. No se puede eliminar.
+                    // Se muestra el mensaje y no se hace nada más.
+                    MessageBox.Show(advertencia, "Acción Bloqueada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
-                    confirmacion = MessageBox.Show($"¿Está seguro de que desea eliminar el laboratorio {numeroAsignado}?", "Confirmar Baja", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                }
+                    // No hay reservas, se pide confirmación para la baja.
+                    var confirmacion = MessageBox.Show($"¿Está seguro de que desea eliminar el laboratorio {numeroAsignado}?", "Confirmar Baja", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-                if (confirmacion == DialogResult.Yes)
-                {
-                    _controller.BajaLaboratorio(numeroAsignado);
-                    CargarLaboratorios();
-                    LimpiarCampos();
+                    if (confirmacion == DialogResult.Yes)
+                    {
+                        _controller.BajaLaboratorio(numeroAsignado);
+                        CargarLaboratorios();
+                        LimpiarCampos();
+                    }
                 }
             }
             catch (Exception ex)
             {
-                 MessageBox.Show(ex.Message, "Error en la Baja", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Error en la Baja", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
