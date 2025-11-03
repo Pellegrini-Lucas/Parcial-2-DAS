@@ -17,44 +17,41 @@ namespace Parcial_2_DAS.Views
 
         private void InitializeComponent()
         {
-            lblTitulo = new Label();
-            lblIntegrante1 = new Label();
-            SuspendLayout();
-            // 
+            this.lblTitulo = new System.Windows.Forms.Label();
+            this.lblIntegrante1 = new System.Windows.Forms.Label();
+            this.SuspendLayout();
+            //
             // lblTitulo
-            // 
-            lblTitulo.AutoSize = true;
-            lblTitulo.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTitulo.Location = new Point(35, 23);
-            lblTitulo.Margin = new Padding(4, 0, 4, 0);
-            lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(208, 24);
-            lblTitulo.TabIndex = 0;
-            lblTitulo.Text = "Equipo de Desarrollo";
-            // 
+            //
+            this.lblTitulo.AutoSize = true;
+            this.lblTitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTitulo.Location = new System.Drawing.Point(30, 20);
+            this.lblTitulo.Name = "lblTitulo";
+            this.lblTitulo.Size = new System.Drawing.Size(225, 24);
+            this.lblTitulo.TabIndex = 0;
+            this.lblTitulo.Text = "Equipo de Desarrollo";
+            //
             // lblIntegrante1
-            // 
-            lblIntegrante1.AutoSize = true;
-            lblIntegrante1.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblIntegrante1.Location = new Point(35, 81);
-            lblIntegrante1.Margin = new Padding(4, 0, 4, 0);
-            lblIntegrante1.Name = "lblIntegrante1";
-            lblIntegrante1.Size = new Size(355, 17);
-            lblIntegrante1.TabIndex = 1;
-            lblIntegrante1.Text = "Pellegrini, Lucas, Lucas.Pellegrini@alumnos.uai.edu.ar";
-            // 
+            //
+            this.lblIntegrante1.AutoSize = true;
+            this.lblIntegrante1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblIntegrante1.Location = new System.Drawing.Point(30, 70);
+            this.lblIntegrante1.Name = "lblIntegrante1";
+            this.lblIntegrante1.Size = new System.Drawing.Size(350, 17);
+            this.lblIntegrante1.TabIndex = 1;
+            this.lblIntegrante1.Text = "Apellido, Nombres, email.institucional@uai.edu.ar";
+            //
             // frmIntegrantes
-            // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(490, 173);
-            Controls.Add(lblIntegrante1);
-            Controls.Add(lblTitulo);
-            Margin = new Padding(4, 3, 4, 3);
-            Name = "frmIntegrantes";
-            Text = "Integrantes";
-            ResumeLayout(false);
-            PerformLayout();
+            //
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(420, 150);
+            this.Controls.Add(this.lblIntegrante1);
+            this.Controls.Add(this.lblTitulo);
+            this.Name = "frmIntegrantes";
+            this.Text = "Integrantes";
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
         #endregion
