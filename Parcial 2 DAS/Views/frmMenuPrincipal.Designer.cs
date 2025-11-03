@@ -1,4 +1,4 @@
-namespace SistemaReservas.Views
+namespace Parcial_2_DAS
 {
     partial class frmMenuPrincipal
     {

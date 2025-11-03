@@ -1,6 +1,6 @@
 using System.Windows.Forms;
 
-namespace SistemaReservas.Views
+namespace Parcial_2_DAS.Views
 {
     public partial class frmIntegrantes : Form
     {
