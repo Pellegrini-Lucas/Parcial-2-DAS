@@ -2,7 +2,7 @@ using SistemaReservas.Helpers;
 using SistemaReservas.Interfaces;
 using SistemaReservas.Models;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace SistemaReservas.Repositories
 {
