@@ -1,10 +1,8 @@
 -- Script para crear la base de datos y las tablas del Sistema de Reservas de Laboratorio
+-- Script para crear las tablas del Sistema de Reservas de Laboratorio
 
-CREATE DATABASE SistemaReservasUAI;
-GO
-
-USE SistemaReservasUAI;
-GO
+-- La base de datos es creada programáticamente por la aplicación si no existe.
+-- Este script solo se encarga de crear las tablas.
 
 -- Tabla para almacenar los laboratorios de informática
 CREATE TABLE Laboratorios (
