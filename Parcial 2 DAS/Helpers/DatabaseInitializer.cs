@@ -12,58 +12,72 @@ namespace SistemaReservas.Helpers
         {
             var connectionStringBuilder = new SqlConnectionStringBuilder(DatabaseHelper.GetConnectionString());
             string dbName = connectionStringBuilder.InitialCatalog;
-            string masterConnectionString = $"Data Source={connectionStringBuilder.DataSource};Initial Catalog=master;Integrated Security=True;TrustServerCertificate=True";
 
-            using (var connection = new SqlConnection(masterConnectionString))
+            // 1. Asegurarse de que la base de datos exista
+            connectionStringBuilder.InitialCatalog = "master"; // Conectarse a master para verificar/crear
+            string masterConnectionString = connectionStringBuilder.ToString();
+
+            using (var masterConnection = new SqlConnection(masterConnectionString))
             {
-                connection.Open();
-                using (var command = connection.CreateCommand())
+                masterConnection.Open();
+                using (var command = masterConnection.CreateCommand())
                 {
                     command.CommandText = $"SELECT db_id('{dbName}')";
-                    var result = command.ExecuteScalar();
+                    bool dbExists = (command.ExecuteScalar() != DBNull.Value);
 
-                    // Si la base de datos no existe (resultado es NULL), la creamos.
-                    if (result == DBNull.Value)
+                    if (!dbExists)
                     {
-                        // 1. Crear la base de datos vacía
                         command.CommandText = $"CREATE DATABASE [{dbName}]";
                         command.ExecuteNonQuery();
+                    }
+                }
+            }
 
-                        // Darle un momento al servidor para que la base de datos esté disponible
-                        System.Threading.Thread.Sleep(2000);
+            // 2. Asegurarse de que las tablas existan dentro de la base de datos
+            using (var dbConnection = new SqlConnection(DatabaseHelper.GetConnectionString()))
+            {
+                dbConnection.Open();
+                bool tablesExist;
+                using (var command = dbConnection.CreateCommand())
+                {
+                    // La forma más robusta de verificar si una tabla específica existe
+                    command.CommandText = "IF OBJECT_ID(N'dbo.Laboratorios', N'U') IS NOT NULL SELECT 1 ELSE SELECT 0";
+                    tablesExist = (int)command.ExecuteScalar() == 1;
+                }
 
-                        // 2. Conectarse a la nueva base de datos y ejecutar el script para crear las tablas
-                        using (var dbConnection = new SqlConnection(DatabaseHelper.GetConnectionString()))
+                // Si las tablas no existen, ejecutar el script de creación
+                if (!tablesExist)
+                {
+                    var assembly = Assembly.GetExecutingAssembly();
+                    var resourceName = "Parcial_2_DAS.schema.sql";
+
+                    using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                    {
+                        if (stream == null)
                         {
-                            dbConnection.Open();
+                            throw new FileNotFoundException($"Error crítico: No se pudo encontrar el script de inicialización '{resourceName}'. " +
+                                                            "Asegúrese de que el archivo 'schema.sql' esté presente y marcado como 'Recurso incrustado'.", resourceName);
+                        }
 
-                            // Leer el script SQL desde los recursos embebidos del proyecto
-                            var assembly = Assembly.GetExecutingAssembly();
-                            var resourceName = "Parcial_2_DAS.schema.sql"; // Namespace.FileName
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            string sqlScript = reader.ReadToEnd();
+                            var batches = Regex.Split(sqlScript, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
-                            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                            foreach (var batch in batches)
                             {
-                                if (stream == null)
+                                if (!string.IsNullOrWhiteSpace(batch))
                                 {
-                                    throw new FileNotFoundException($"Error crítico: No se pudo encontrar el script de inicialización '{resourceName}'. " +
-                                                                    "Asegúrese de que el archivo 'schema.sql' esté presente y marcado como 'Recurso incrustado' en las propiedades del archivo.", resourceName);
-                                }
-
-                                using (StreamReader reader = new StreamReader(stream))
-                                {
-                                    string sqlScript = reader.ReadToEnd();
-                                    // El script usa 'GO' que no es T-SQL estándar. Lo dividimos en lotes.
-                                    var batches = Regex.Split(sqlScript, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
-
-                                    foreach (var batch in batches)
+                                    using (var scriptCommand = dbConnection.CreateCommand())
                                     {
-                                        if (!string.IsNullOrWhiteSpace(batch))
+                                        scriptCommand.CommandText = batch;
+                                        try
                                         {
-                                            using (var scriptCommand = dbConnection.CreateCommand())
-                                            {
-                                                scriptCommand.CommandText = batch;
-                                                scriptCommand.ExecuteNonQuery();
-                                            }
+                                            scriptCommand.ExecuteNonQuery();
+                                        }
+                                        catch (SqlException ex)
+                                        {
+                                            throw new Exception($"Error ejecutando el lote de comandos SQL:\n---\n{batch}\n---\nError: {ex.Message}", ex);
                                         }
                                     }
                                 }
