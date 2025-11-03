@@ -34,9 +34,9 @@ namespace SistemaReservas.Controllers
                 throw new ArgumentException("Todos los campos de la reserva son obligatorios.");
             }
 
-            if (!int.TryParse(anioStr, out int anio) || anio < 1900 || anio > DateTime.Now.Year + 5)
+            if (!int.TryParse(anioStr, out int anio) || anio < 1 || anio > 10) // Rango para año de carrera
             {
-                throw new FormatException("El año debe ser un número válido.");
+                throw new FormatException("El año de la carrera debe ser un número válido (ej: 1, 2, 3).");
             }
 
             var laboratorio = _laboratorioRepositorio.GetByNumero(laboratorioId);
@@ -110,9 +110,9 @@ namespace SistemaReservas.Controllers
             {
                 throw new ArgumentException("Todos los campos de la reserva son obligatorios.");
             }
-            if (!int.TryParse(anioStr, out int anio) || anio < 1900 || anio > DateTime.Now.Year + 5)
+            if (!int.TryParse(anioStr, out int anio) || anio < 1 || anio > 10) // Rango para año de carrera
             {
-                throw new FormatException("El año debe ser un número válido.");
+                throw new FormatException("El año de la carrera debe ser un número válido (ej: 1, 2, 3).");
             }
             var laboratorio = _laboratorioRepositorio.GetByNumero(laboratorioId);
             if (laboratorio == null)
