@@ -42,20 +42,28 @@ namespace SistemaReservas.Helpers
                             var resourceName = "Parcial_2_DAS.schema.sql"; // Namespace.FileName
 
                             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-                            using (StreamReader reader = new StreamReader(stream))
                             {
-                                string sqlScript = reader.ReadToEnd();
-                                // El script usa 'GO' que no es T-SQL estándar. Lo dividimos en lotes.
-                                var batches = Regex.Split(sqlScript, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
-
-                                foreach (var batch in batches)
+                                if (stream == null)
                                 {
-                                    if (!string.IsNullOrWhiteSpace(batch))
+                                    throw new FileNotFoundException($"Error crítico: No se pudo encontrar el script de inicialización '{resourceName}'. " +
+                                                                    "Asegúrese de que el archivo 'schema.sql' esté presente y marcado como 'Recurso incrustado' en las propiedades del archivo.", resourceName);
+                                }
+
+                                using (StreamReader reader = new StreamReader(stream))
+                                {
+                                    string sqlScript = reader.ReadToEnd();
+                                    // El script usa 'GO' que no es T-SQL estándar. Lo dividimos en lotes.
+                                    var batches = Regex.Split(sqlScript, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+
+                                    foreach (var batch in batches)
                                     {
-                                        using (var scriptCommand = dbConnection.CreateCommand())
+                                        if (!string.IsNullOrWhiteSpace(batch))
                                         {
-                                            scriptCommand.CommandText = batch;
-                                            scriptCommand.ExecuteNonQuery();
+                                            using (var scriptCommand = dbConnection.CreateCommand())
+                                            {
+                                                scriptCommand.CommandText = batch;
+                                                scriptCommand.ExecuteNonQuery();
+                                            }
                                         }
                                     }
                                 }
