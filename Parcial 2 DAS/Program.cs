@@ -8,10 +8,19 @@ namespace Parcial_2_DAS
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new frmMenuPrincipal());
+            try
+            {
+                // Asegurarse de que la base de datos y las tablas existan antes de iniciar la app.
+                SistemaReservas.Helpers.DatabaseInitializer.EnsureDatabaseExists();
+
+                ApplicationConfiguration.Initialize();
+                Application.Run(new frmMenuPrincipal());
+            }
+            catch (Exception ex)
+            {
+                // Si algo falla catastróficamente durante la inicialización, mostrar el error.
+                MessageBox.Show($"Error fatal al iniciar la aplicación: {ex.Message}", "Error Crítico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

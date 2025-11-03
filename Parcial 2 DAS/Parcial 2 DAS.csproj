@@ -16,6 +16,7 @@
     <Compile Update="Views\**\*.cs">
       <SubType>Form</SubType>
     </Compile>
+    <EmbeddedResource Include="schema.sql" />
   </ItemGroup>
 
   <ItemGroup>
